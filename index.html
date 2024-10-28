@@ -39,7 +39,8 @@
             max-width: 400px;
             margin: 0 auto;
         }
-        .form-container input[type="text"] {
+        .form-container input[type="text"],
+        .form-container input[type="number"] {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -91,11 +92,13 @@
         <input type="text" name="nama_pembeli" id="nama_pembeli" required>
         
         <p>Pilih Menu:</p>
-        <input type="checkbox" name="menu" value="Daging Mercon"> Daging Mercon - Rp25.000<br>
-        <input type="checkbox" name="menu" value="Ceker Mercon"> Ceker Mercon - Rp15.000<br>
-        <input type="checkbox" name="menu" value="Bakso Mercon"> Bakso Mercon - Rp12.000<br>
-        <input type="checkbox" name="menu" value="Mix Ceker Bakso"> Mix Ceker Bakso - Rp15.000<br>
-        <input type="checkbox" name="menu" value="Es Teler"> Es Teler - Rp12.000<br>
+        <div>
+            <input type="number" name="daging" id="daging" min="0" value="0"> Daging Mercon - Rp25.000<br>
+            <input type="number" name="ceker" id="ceker" min="0" value="0"> Ceker Mercon - Rp15.000<br>
+            <input type="number" name="bakso" id="bakso" min="0" value="0"> Bakso Mercon - Rp12.000<br>
+            <input type="number" name="mix" id="mix" min="0" value="0"> Mix Ceker Bakso - Rp15.000<br>
+            <input type="number" name="es_teler" id="es_teler" min="0" value="0"> Es Teler - Rp12.000<br>
+        </div>
         
         <button type="button" onclick="submitForm()">Pesan Sekarang</button>
     </form>
@@ -126,9 +129,13 @@
 
     function submitForm() {
         const namaPembeli = document.getElementById("nama_pembeli").value;
-        const menuCheckBoxes = document.querySelectorAll("input[name='menu']:checked");
-        
-        if (!namaPembeli || menuCheckBoxes.length === 0) {
+        const daging = parseInt(document.getElementById("daging").value) || 0;
+        const ceker = parseInt(document.getElementById("ceker").value) || 0;
+        const bakso = parseInt(document.getElementById("bakso").value) || 0;
+        const mix = parseInt(document.getElementById("mix").value) || 0;
+        const esTeler = parseInt(document.getElementById("es_teler").value) || 0;
+
+        if (!namaPembeli || (daging + ceker + bakso + mix + esTeler) === 0) {
             alert("Harap lengkapi semua field.");
             return;
         }
@@ -136,10 +143,26 @@
         let menuPesanan = [];
         let hargaTotal = 0;
 
-        menuCheckBoxes.forEach((checkbox) => {
-            menuPesanan.push(checkbox.value);
-            hargaTotal += daftarHarga[checkbox.value];
-        });
+        if (daging > 0) {
+            menuPesanan.push(`Daging Mercon x${daging}`);
+            hargaTotal += daftarHarga["Daging Mercon"] * daging;
+        }
+        if (ceker > 0) {
+            menuPesanan.push(`Ceker Mercon x${ceker}`);
+            hargaTotal += daftarHarga["Ceker Mercon"] * ceker;
+        }
+        if (bakso > 0) {
+            menuPesanan.push(`Bakso Mercon x${bakso}`);
+            hargaTotal += daftarHarga["Bakso Mercon"] * bakso;
+        }
+        if (mix > 0) {
+            menuPesanan.push(`Mix Ceker Bakso x${mix}`);
+            hargaTotal += daftarHarga["Mix Ceker Bakso"] * mix;
+        }
+        if (esTeler > 0) {
+            menuPesanan.push(`Es Teler x${esTeler}`);
+            hargaTotal += daftarHarga["Es Teler"] * esTeler;
+        }
 
         const tanggal = new Date().toLocaleString();
 
