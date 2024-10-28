@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemesanan Makanan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        h2 {
+            color: #d5006d;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table th {
+            background-color: #d5006d;
+            color: white;
+        }
+        .form-container {
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .form-container input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .form-container button {
+            background-color: #d5006d;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+        .form-container button:hover {
+            background-color: #b3005b;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Pemesanan Makanan</h2>
+<table class="table" id="pesananTable">
+    <tr>
+        <th>Nama Pembeli</th>
+        <th>Menu Terakhir Dipesan</th>
+        <th>Harga Total</th>
+        <th>Tanggal</th>
+    </tr>
+</table>
+
+<div class="form-container">
+    <h2>Form Pemesanan</h2>
+    <form id="pemesananForm">
+        <label for="nama_pembeli">Nama Pembeli:</label>
+        <input type="text" name="nama_pembeli" id="nama_pembeli" required>
+        
+        <p>Pilih Menu:</p>
+        <input type="checkbox" name="menu" value="Daging Mercon"> Daging Mercon - Rp25.000<br>
+        <input type="checkbox" name="menu" value="Ceker Mercon"> Ceker Mercon - Rp15.000<br>
+        <input type="checkbox" name="menu" value="Bakso Mercon"> Bakso Mercon - Rp12.000<br>
+        <input type="checkbox" name="menu" value="Mix Ceker Bakso"> Mix Ceker Bakso - Rp15.000<br>
+        <input type="checkbox" name="menu" value="Es Teler"> Es Teler - Rp12.000<br>
+        
+        <button type="button" onclick="submitForm()">Pesan Sekarang</button>
+    </form>
+</div>
+
+<script>
+    const daftarHarga = {
+        "Daging Mercon": 25000,
+        "Ceker Mercon": 15000,
+        "Bakso Mercon": 12000,
+        "Mix Ceker Bakso": 15000,
+        "Es Teler": 12000
+    };
+
+    function submitForm() {
+        const namaPembeli = document.getElementById("nama_pembeli").value;
+        const menuCheckBoxes = document.querySelectorAll("input[name='menu']:checked");
+        
+        if (!namaPembeli || menuCheckBoxes.length === 0) {
+            alert("Harap lengkapi semua field.");
+            return;
+        }
+
+        let menuPesanan = [];
+        let hargaTotal = 0;
+
+        menuCheckBoxes.forEach((checkbox) => {
+            menuPesanan.push(checkbox.value);
+            hargaTotal += daftarHarga[checkbox.value];
+        });
+
+        const tanggal = new Date().toLocaleString();
+
+        // Menambahkan data ke tabel
+        const table = document.getElementById("pesananTable");
+        const newRow = table.insertRow(-1);
+        newRow.insertCell(0).textContent = namaPembeli;
+        newRow.insertCell(1).textContent = menuPesanan.join(", ");
+        newRow.insertCell(2).textContent = `Rp${hargaTotal.toLocaleString()}`;
+        newRow.insertCell(3).textContent = tanggal;
+
+        // Reset form
+        document.getElementById("pemesananForm").reset();
+    }
+</script>
+
+</body>
+</html>
