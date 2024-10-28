@@ -9,14 +9,17 @@
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             padding: 20px;
+            margin: 0;
         }
         h2 {
             color: #d5006d;
+            text-align: center;
         }
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            overflow-x: auto; /* Memungkinkan scrolling horizontal */
         }
         .table th, .table td {
             border: 1px solid #ddd;
@@ -52,6 +55,20 @@
         }
         .form-container button:hover {
             background-color: #b3005b;
+        }
+
+        /* Media query untuk tampilan yang lebih baik di perangkat kecil */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.5em; /* Ukuran font yang lebih kecil di perangkat kecil */
+            }
+            .form-container {
+                padding: 15px;
+            }
+            .table th, .table td {
+                padding: 6px; /* Padding yang lebih kecil untuk sel */
+                font-size: 0.9em; /* Ukuran font yang lebih kecil di perangkat kecil */
+            }
         }
     </style>
 </head>
@@ -93,6 +110,20 @@
         "Es Teler": 12000
     };
 
+    // Load data from localStorage
+    function loadPesanan() {
+        const pesanan = JSON.parse(localStorage.getItem("pesanan")) || [];
+        const table = document.getElementById("pesananTable");
+
+        pesanan.forEach(item => {
+            const newRow = table.insertRow(-1);
+            newRow.insertCell(0).textContent = item.nama;
+            newRow.insertCell(1).textContent = item.menu;
+            newRow.insertCell(2).textContent = `Rp${item.harga.toLocaleString()}`;
+            newRow.insertCell(3).textContent = item.tanggal;
+        });
+    }
+
     function submitForm() {
         const namaPembeli = document.getElementById("nama_pembeli").value;
         const menuCheckBoxes = document.querySelectorAll("input[name='menu']:checked");
@@ -112,7 +143,13 @@
 
         const tanggal = new Date().toLocaleString();
 
-        // Menambahkan data ke tabel
+        // Simpan data ke localStorage
+        const pesananBaru = { nama: namaPembeli, menu: menuPesanan.join(", "), harga: hargaTotal, tanggal: tanggal };
+        const pesanan = JSON.parse(localStorage.getItem("pesanan")) || [];
+        pesanan.push(pesananBaru);
+        localStorage.setItem("pesanan", JSON.stringify(pesanan));
+
+        // Tambahkan data ke tabel
         const table = document.getElementById("pesananTable");
         const newRow = table.insertRow(-1);
         newRow.insertCell(0).textContent = namaPembeli;
@@ -123,6 +160,9 @@
         // Reset form
         document.getElementById("pemesananForm").reset();
     }
+
+    // Load pesanan saat halaman dimuat
+    window.onload = loadPesanan;
 </script>
 
 </body>
